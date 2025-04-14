@@ -128,5 +128,4 @@ sort all-external-assets.txt | uniq > final-assets-list.txt
 wget -i final-assets-list.txt --no-host-directories --content-disposition --directory-prefix=assets
 ```
 
-Now we can download the HTML files. 
 
