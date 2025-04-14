@@ -1,4 +1,4 @@
-# Claude: About 'Webflow-2023' 
+# Claude: About 'Webflow-2023' Project 
 
 This is a pretty, custom designed portfolio for myself back in 2023. Original site is at https://august-house-llc.webflow.io/. 
 
@@ -8,7 +8,7 @@ This is a pretty, custom designed portfolio for myself back in 2023. Original si
 - Convert to static HTML
 - Deploy to Github Pages
 
-## Challenges 
+### Challenges 
 
 Previously we used this command: 
 
@@ -18,7 +18,7 @@ wget -m -p -E -k -np https://august-house-llc.webflow.io/
 
 We've been encountering similar issues with each site we pull from Webflow or Framer. I'd have some ideas as to have we can be more proactive about anticipating these issues, and thus overall more efficient. 
 
-### Notes from Previous Attempt 
+#### Notes from Previous Attempt 
 
 I'm pulling an old Webflow site and having some interesting issues. 
 1. The wget tool is getting messed up with the quotes around the URLs and the ampersands being spelled out, the tool, and the IDE is not liking the HTML output because it is combining URLs. 
@@ -36,6 +36,33 @@ I'm pulling an old Webflow site and having some interesting issues.
 
 ### Potential Solutions 
 
-I would like to break down the process into smaller steps instead of doing a bunch in one command. This will: 
+I would like to break down the process into smaller steps instead of doing a bunch in one command. This will:
+
 1. Help me learn better exactly what the process actually is. 
 2. Allow me to address each error before we run the command for that step. 
+3. I am going to record each step myself so that I can learn better. 
+4. Instead of running commends, please provide them so that I can record them with what they do; this act of recording is what helps me learn. 
+
+### Objective Requirements 
+
+   - Because of the complexity of the HTML that is a mess and that Webflow has changed over the years, I don't want the command to automatically change things to paths. 
+   - I want to be able to look at the HTML and see if we have similar issues like the ampersands and quotes and then make a decision on how to proceed. 
+   - This will also let me set up the project's directory structure the way it should be for Github Pages. 
+   - From there we will be able to make sure we have all essential files such as the index.html, robots.txt, sitemap.xml, all images, and all CSS and JS files. 
+
+### Setup 
+
+- I've removed completely the old project directory and repository so that we can start fresh. 
+- We are currently working in the Project Directory that I would like to be the main directory for this project. 
+- I just set up a new git branch 'webflow-2023' and a Github Repository 'webflow-2023' and we have made our first commit. 
+
+If all makes sense, let us proceed from here. 
+
+----
+
+# Fully Detailed Process with No Combined Command Steps 
+
+Making my old 2023 Webflow portfolio site static and deploying it to Github Pages. 
+
+## Step 1: 
+
