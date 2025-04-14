@@ -72,23 +72,23 @@ Making my old 2023 Webflow portfolio site static and deploying it to Github Page
 - `-r` follow links within the website and download not just the initial page but also all linked pages it finds. It will traverse through the entire website structure, going from the homepage to all other pages by following the links between them.
 - `-H` (span hosts) allows wget to follow links to other domains. Webflow sites typically store their assets (images, CSS, JS) on CDN domains like cdn.prod.website-files.com. Without -H, wget would only download files from august-house-llc.webflow.io and ignore all those external assets. We probably didn't use it before because other options like -p (page requisites) implicitly enable similar behavior. 
 - `--no-convert-links`: This prevents wget from automatically modifying links in the downloaded HTML files. By default, wget tries to convert all links to work locally, but as you've experienced, this process is error-prone, especially with complex modern websites that have quotes, ampersands, and other special characters in URLs. 
+- `-r -np -H`: Recursive download with no parent and span hosts
+- `--tries=2`: Limit retries to 2 attempts
+- `--domains=...`: Only follow links to these specific domains
+- `--exclude-domains=...`: Skip these domains entirely
+- `--no-convert-links`: Don't modify links in downloaded files
+- `--html-extension`: Add .html extension to HTML files
+- `--no-host-directories`: Don't create hostname directories
+- `--reject "..."`: Skip downloading these file types in this step
+
 
 ## Step 1: 
-```bash
-wget -r -H --no-convert-links https://august-house-llc.webflow.io/
-``` 
-
-### Notes 
-
-Yes, that's very similar to what I'm suggesting! Using a script to extract links and then downloading them separately is often more reliable for complex sites.
-
-Here's how we could implement that approach:
+Let's use a script to extract links and then download them separately. Here's how we could implement that approach. 
 
 1. First, download just the HTML files:
 ```bash
-wget -r -np -H --tries=2 --exclude-domains=barnesandnoble.com,bn.com --no-convert-links --html-extension --no-host-directories --reject "*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.webp,*.svg,*.ttf,*.woff,*.woff2" https://august-house-llc.webflow.io/
+wget -r -np -H --tries=2 --domains=august-house-llc.webflow.io,cdn.prod.website-files.com --exclude-domains=barnesandnoble.com,bn.com --no-convert-links --html-extension --no-host-directories --reject "*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.webp,*.svg,*.ttf,*.woff,*.woff2" https://august-house-llc.webflow.io/
 ```
-
 
 2. Use a script to extract all properly formatted URLs from the HTML files:
 ```bash
@@ -113,3 +113,5 @@ This method:
 For more comprehensive extraction, we could use a slightly more complex script that identifies different URL patterns, or use a tool like Beautiful Soup in Python to parse the HTML properly and extract all links regardless of their format.
 
 This is definitely a more reliable approach compared to trying to get wget to handle everything in one go, especially when dealing with complex HTML that contains these kinds of URL formatting issues.
+
+
