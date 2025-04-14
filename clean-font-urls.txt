@@ -1,0 +1,7 @@
+https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js
+https://fonts.googleapis.com
+https://fonts.gstatic.com
+https://use.typekit.net/hkh6iuv.css
+https://use.typekit.net/hls3mif.css
+https://use.typekit.net/hls3mif.js
+https://use.typekit.net/irt3fqd.css

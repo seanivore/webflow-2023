@@ -90,28 +90,43 @@ Let's use a script to extract links and then download them separately. Here's ho
 wget -r -np -H --tries=2 --domains=august-house-llc.webflow.io,cdn.prod.website-files.com --exclude-domains=barnesandnoble.com,bn.com --no-convert-links --html-extension --no-host-directories --reject "*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.webp,*.svg,*.ttf,*.woff,*.woff2" https://august-house-llc.webflow.io/
 ```
 
-2. Use a script to extract all properly formatted URLs from the HTML files:
-```bash
-# Extract CDN URLs
-grep -r -o 'https://cdn.prod.website-files.com[^"&]*' . | sort | uniq > asset-urls.txt
+2. We need to capture more file types from the CDN, not just PNGs (.webp, .css, .js, etc.)
+3. We need to handle the internal link structure for page navigation
+4. We should create separate directories for different asset types
 
-# Extract other potentially malformed URLs that might be internal links
-grep -r -o '"https://august-house-llc.webflow.io/[^"&]*' . | sed 's/"https:/https:/g' | sort | uniq >> asset-urls.txt
-grep -r -o '&quot;https://august-house-llc.webflow.io/[^"&]*' . | sed 's/&quot;https:/https:/g' | sort | uniq >> asset-urls.txt
+```bash
+# Extract all CDN URLs (including CSS, JS, webp, etc.)
+grep -r -o 'https://cdn.prod.website-files.com[^"'\'']*' . | sort | uniq > all-cdn-urls.txt
+
+# Extract font URLs
+grep -r -o 'https://ajax.googleapis.com[^"'\'']*' . | sort | uniq > font-urls.txt
+grep -r -o 'https://fonts.googleapis.com[^"'\'']*' . | sort | uniq >> font-urls.txt
+grep -r -o 'https://fonts.gstatic.com[^"'\'']*' . | sort | uniq >> font-urls.txt
+grep -r -o 'https://use.typekit.net[^"'\'']*' . | sort | uniq >> font-urls.txt
 ```
 
-3. Use wget to download all the extracted URLs:
+Those have a relative path attached to the URL. We need to remove that. 
+
 ```bash
-wget -i asset-urls.txt --no-host-directories --content-disposition
+# Clean the CDN URLs file
+cat all-cdn-urls.txt | sed 's/^.*:\(https:\/\/cdn\.prod\.website-files\.com[^[:space:]]*\).*$/\1/g' | sort | uniq > clean-cdn-urls.txt
+
+# Clean the font URLs file
+cat font-urls.txt | sed 's/^.*:\(https:\/\/[^[:space:]]*\).*$/\1/g' | sort | uniq > clean-font-urls.txt
+
+# Combine the clean files
+cat clean-cdn-urls.txt clean-font-urls.txt > all-external-assets.txt
 ```
 
-This method:
-- Gets the HTML structure first
-- Specifically extracts clean CDN URLs without the problematic quote entities
-- Downloads just those assets into the appropriate structure
+Now lets remove duplicates. Then download them.     
 
-For more comprehensive extraction, we could use a slightly more complex script that identifies different URL patterns, or use a tool like Beautiful Soup in Python to parse the HTML properly and extract all links regardless of their format.
+```bash
+# Remove duplicates and create a final clean list
+sort all-external-assets.txt | uniq > final-assets-list.txt
 
-This is definitely a more reliable approach compared to trying to get wget to handle everything in one go, especially when dealing with complex HTML that contains these kinds of URL formatting issues.
+# Download using the deduplicated list
+wget -i final-assets-list.txt --no-host-directories --content-disposition --directory-prefix=assets
+```
 
+Now we can download the HTML files. 
 
