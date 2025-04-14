@@ -86,12 +86,18 @@ Here's how we could implement that approach:
 
 1. First, download just the HTML files:
 ```bash
-wget -r -np -H --no-convert-links --html-extension --no-host-directories --reject "*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.webp,*.svg,*.ttf,*.woff,*.woff2" https://august-house-llc.webflow.io/
+wget -r -np -H --tries=2 --exclude-domains=barnesandnoble.com,bn.com --no-convert-links --html-extension --no-host-directories --reject "*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.webp,*.svg,*.ttf,*.woff,*.woff2" https://august-house-llc.webflow.io/
 ```
+
 
 2. Use a script to extract all properly formatted URLs from the HTML files:
 ```bash
+# Extract CDN URLs
 grep -r -o 'https://cdn.prod.website-files.com[^"&]*' . | sort | uniq > asset-urls.txt
+
+# Extract other potentially malformed URLs that might be internal links
+grep -r -o '"https://august-house-llc.webflow.io/[^"&]*' . | sed 's/"https:/https:/g' | sort | uniq >> asset-urls.txt
+grep -r -o '&quot;https://august-house-llc.webflow.io/[^"&]*' . | sed 's/&quot;https:/https:/g' | sort | uniq >> asset-urls.txt
 ```
 
 3. Use wget to download all the extracted URLs:
