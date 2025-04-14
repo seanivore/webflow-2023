@@ -164,3 +164,15 @@ find . -name "*.html" -exec sed -i '' 's|href="https://use.typekit.net/\([^"]*\)
 # Fix Google Fonts references
 find . -name "*.html" -exec sed -i '' 's|href="https://fonts.googleapis.com|href="assets/css/fonts.googleapis.com|g' {} \;
 ```
+
+Target some that were missed. 
+
+```bash
+# Add .html extension to internal links
+find . -name "*.html" -exec sed -i '' 's|href="\(/[^"]*\)"|href="\1.html"|g' {} \;
+
+# Then fix any double extensions that might have been created
+find . -name "*.html" -exec sed -i '' 's|href="\([^"]*\)\.html\.html"|href="\1.html"|g' {} \;
+find . -name "*.html" -exec sed -i '' 's|href="\([^"]*\)\.css\.html"|href="\1.css"|g' {} \;
+find . -name "*.html" -exec sed -i '' 's|href="\([^"]*\)\.js\.html"|href="\1.js"|g' {} \;
+```
