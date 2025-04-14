@@ -118,7 +118,7 @@ cat font-urls.txt | sed 's/^.*:\(https:\/\/[^[:space:]]*\).*$/\1/g' | sort | uni
 cat clean-cdn-urls.txt clean-font-urls.txt > all-external-assets.txt
 ```
 
-Now lets remove duplicates. Then download them.     
+Now lets remove duplicates. Then download them. 
 
 ```bash
 # Remove duplicates and create a final clean list
@@ -128,4 +128,39 @@ sort all-external-assets.txt | uniq > final-assets-list.txt
 wget -i final-assets-list.txt --no-host-directories --content-disposition --directory-prefix=assets
 ```
 
+Fix the Ampersands. 
+```bash
+find . -name "*.html" -exec sed -i '' 's/&amp;/\&/g' {} \;
+``` 
 
+Fix URLs and paths. 
+
+```bash
+# Fix image URLs in background-image styles with single quotes
+find . -name "*.html" -exec sed -i '' "s|url('https://cdn.prod.website-files.com/[^/]*/\([^']*\)')|url('assets/images/\1')|g" {} \;
+
+# Fix image URLs in background-image styles with double quotes
+find . -name "*.html" -exec sed -i '' 's|url("https://cdn.prod.website-files.com/[^/]*/\([^"]*\)")|url("assets/images/\1")|g' {} \;
+
+# Fix image URLs in content attributes
+find . -name "*.html" -exec sed -i '' 's|content="https://cdn.prod.website-files.com/[^/]*/\([^"]*\)"|content="assets/images/\1"|g' {} \;
+
+# Fix image URLs in img src attributes
+find . -name "*.html" -exec sed -i '' 's|src="https://cdn.prod.website-files.com/[^/]*/\([^"]*\)"|src="assets/images/\1"|g' {} \;
+
+# Fix CSS file references
+find . -name "*.html" -exec sed -i '' 's|href="https://cdn.prod.website-files.com/[^/]*/css/\([^"]*\)"|href="assets/css/\1"|g' {} \;
+
+# Fix JS file references
+find . -name "*.html" -exec sed -i '' 's|src="https://cdn.prod.website-files.com/[^/]*/js/\([^"]*\)"|src="assets/js/\1"|g' {} \;
+
+# Fix Google webfont reference
+find . -name "*.html" -exec sed -i '' 's|src="https://ajax.googleapis.com/ajax/libs/webfont/[^"]*"|src="assets/js/webfont.js"|g' {} \;
+
+# Fix typekit references
+find . -name "*.html" -exec sed -i '' 's|src="https://use.typekit.net/\([^"]*\)"|src="assets/js/\1"|g' {} \;
+find . -name "*.html" -exec sed -i '' 's|href="https://use.typekit.net/\([^"]*\)"|href="assets/css/\1"|g' {} \;
+
+# Fix Google Fonts references
+find . -name "*.html" -exec sed -i '' 's|href="https://fonts.googleapis.com|href="assets/css/fonts.googleapis.com|g' {} \;
+```
