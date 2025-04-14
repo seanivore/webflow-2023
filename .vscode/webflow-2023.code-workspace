@@ -1,0 +1,12 @@
+{
+	"folders": [
+        {
+            "name": "ai-dev-docs",
+            "path": "../../_resources/ai-dev-docs"
+        },
+        {
+            "name": "webflow-2023",
+            "path": ".."
+        }
+    ]
+}
